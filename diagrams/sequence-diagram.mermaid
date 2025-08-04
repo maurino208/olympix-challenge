@@ -1,0 +1,36 @@
+sequenceDiagram
+    participant User
+    participant LendingProtocol as Lending Protocol Contracts
+    participant OnChainMonitor as On-Chain Monitoring Agent
+    participant OracleSanity as Oracle Sanity Layer
+    participant Oracle as Price Oracle
+    participant EventBus as Event Emission (Blockchain Events)
+    participant OffChainWatchdog as Off-Chain Watchdog Service
+    participant EmergencyModule as Emergency Circuit Breaker
+    participant Governance as Governance & Alerts Dashboard
+
+    User->>LendingProtocol: requestBorrow(amount)
+    LendingProtocol->>OracleSanity: requestPrice(asset)
+    OracleSanity->>Oracle: fetchPrice(asset)
+    Oracle-->>OracleSanity: returnPrice(price)
+    OracleSanity-->>LendingProtocol: validatedPrice(price)
+    LendingProtocol->>OnChainMonitor: validateBorrow(user, amount, price)
+    OnChainMonitor-->>LendingProtocol: validationResult(approve/reject)
+    alt validationResult == reject
+        LendingProtocol-->>User: revert("Borrow exceeds limit")
+        Note right of User: Borrow request denied
+    else validationResult == approve
+        LendingProtocol-->>User: transferBorrowedAssets(amount)
+        LendingProtocol->>EventBus: emit BorrowEvent(user, amount, price)
+    end
+
+    EventBus->>OffChainWatchdog: detectBorrowEvent(user, amount, price)
+    OffChainWatchdog->>OffChainWatchdog: analyzeBehavior(user, amount, price)
+    alt anomalyDetected == true
+        OffChainWatchdog->>EmergencyModule: triggerPause()
+        OffChainWatchdog->>Governance: sendAlert("Suspicious borrow detected")
+        EmergencyModule-->>LendingProtocol: pauseProtocol()
+        Governance-->>Governance: displayAlert()
+    else anomalyDetected == false
+        OffChainWatchdog->>Governance: updateDashboard(user, amount, price)
+    end

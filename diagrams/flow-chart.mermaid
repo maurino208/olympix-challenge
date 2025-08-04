@@ -1,0 +1,17 @@
+flowchart TD
+    A[User Requests Borrow] --> B[Fetch Asset Price from Oracle Sanity Layer]
+    B --> C{Is Price Valid and Fresh?}
+    C -- No --> D[Reject Transaction: Invalid Price]
+    C -- Yes --> E[On-Chain Monitor Validates Borrow Limits]
+    E --> F{Is Borrow Within Allowed Limits?}
+    F -- No --> G[Reject Transaction: Borrow Limit Exceeded]
+    F -- Yes --> H[Lending Protocol Transfers Borrowed Assets]
+    H --> I[Emit Borrow Event on Blockchain]
+    I --> J[Off-Chain Watchdog Listens to Borrow Event]
+    J --> K[Analyze Borrow Behavior & Price Trends]
+    K --> L{Anomaly Detected?}
+    L -- No --> M[Update Dashboard: Normal Activity]
+    L -- Yes --> N[Trigger Emergency Circuit Breaker]
+    N --> O[Pause Protocol Functions]
+    N --> P[Send Alert to Governance Dashboard]
+    O --> Q[Governance Reviews and Takes Action]
