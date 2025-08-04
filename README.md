@@ -4,7 +4,7 @@ A comprehensive Node.js/TypeScript solution to prevent DeFi exploits like the Ra
 
 ## 🛡️ Security Features
 
-This solution implements a multi-layered security architecture based on the provided flow charts:
+This solution implements a multi-layered security architecture:
 
 ### 1. Oracle Sanity Layer
 - Validates price freshness and authenticity
@@ -109,15 +109,6 @@ npm run lint
 npm run lint:fix
 ```
 
-## 🔧 Configuration
-
-Create a `.env` file in the root directory:
-
-```env
-PORT=3000
-NODE_ENV=development
-```
-
 ## 📊 Demo Assets
 
 The system comes with pre-configured demo assets:
@@ -199,23 +190,3 @@ The system provides comprehensive monitoring:
 - WebSocket real-time updates
 - Grafana dashboards
 - Multi-chain support
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
-## 🆘 Support
-
-For questions or issues, please open an issue on GitHub.
-
----
-
-**This solution is designed to prevent DeFi exploits by implementing comprehensive security measures at multiple layers, following the exact flow and sequence diagrams provided.** 
