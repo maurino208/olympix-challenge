@@ -18,7 +18,7 @@ export class OracleSanityServiceImpl implements OracleSanityService {
   }
 
   public async validatePriceSource(asset: Asset): Promise<boolean> {
-    const validSources = ['chainlink', 'pyth', 'band', 'tellor'];
+    const validSources = ['chainlink', 'pyth', 'band', 'tellor'] as any;
     return validSources.includes(asset.priceSource.toLowerCase());
   }
 
